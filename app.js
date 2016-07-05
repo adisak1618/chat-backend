@@ -4,12 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var v1 = require('./api/v1/routes');
 
 var app = express();
-
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+app.disable('etag');
+// connect mongodb
+mongoose.connect('mongodb://localhost/chidchat');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -21,9 +25,35 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+io.on('connection', function (socket) {
+  socket.on('joinRoom', function(roomNum) {
+    console.log('Join room => ' + roomNum);
+    socket.join(roomNum);
+  })
+  socket.on('message', function(data, room) {
+    console.log(socket.rooms);
+    console.log('SEND TO ROOM =>' + room)
+    socket.broadcast.to(room).emit('message', data)
+  })
+  socket.on('leaveRoom', function(roomNum) {
+    console.log("LEAVE ROOM" + roomNum);
+    socket.leave(roomNum);
+  })
+  socket.on('disconnect', function() {
+    console.log("DISCONNECT");
+  });
+});
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/v1', v1);
+
+app.get('/sayhi',function(req, res){
+  res.send("hi");
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -57,4 +87,5 @@ app.use(function(err, req, res, next) {
 });
 
 
+server.listen(3000);
 module.exports = app;
