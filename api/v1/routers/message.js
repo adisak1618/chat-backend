@@ -159,7 +159,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
   var ofset = (req.params.ofset ? Number(req.params.ofset) : 0);
   switch (option) {
     case 'ALL':
-        messageData.find({}).skip(ofset).limit(50).sort({createDate: -1}).exec(function(err, data){
+        messageData.find({}).skip(ofset).limit(20).sort({createDate: -1}).exec(function(err, data){
           console.log('ALL');
           if(err){
             res.send(err);
@@ -170,7 +170,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         break;
       case 'OPEN':
         console.log('OPEN');
-        messageData.find({status:0}).skip(ofset).limit(50).sort({createDate: -1}).exec(function(err, data){
+        messageData.find({status:0}).skip(ofset).limit(20).sort({createDate: -1}).exec(function(err, data){
           if(err){
             res.send(err);
           }else{
@@ -180,7 +180,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         break;
       case 'CLOSE':
         console.log('CLOSE');
-        messageData.find({status:1}).skip(ofset).limit(50).sort({createDate: -1}).exec(function(err, data){
+        messageData.find({status:1}).skip(ofset).limit(20).sort({createDate: -1}).exec(function(err, data){
           if(err){
             res.send(err);
           }else{
@@ -190,7 +190,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         break;
       default:
         console.log('default');
-        messageData.find({}).skip(ofset).limit(50).exec(function(err, data){
+        messageData.find({}).skip(ofset).limit(20).exec(function(err, data){
           if(err){
             res.send(err);
           }else{
