@@ -211,7 +211,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
               "own_id": "$own_id"
             }
           },
-          { "$sort": { "length": 1 } },
+          { "$sort": { "length": -1 } },
           { "$limit": 6 }
         ], function (err, data) {
           if (err) {
