@@ -189,10 +189,10 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         });
         break;
       case 'CLOSE_POPULAR':
-        Pop_topic(1);
+        Pop_topic(res, 1);
         break;
       case 'OPEN_POPULAR':
-        Pop_topic(0);
+        Pop_topic(res, 0);
         break;
       default:
         console.log('default');
@@ -233,7 +233,7 @@ router.get('/topics',function(req, res, next){
 });
 
 
-function Pop_topic (type) {
+function Pop_topic (res, type) {
   messageData.aggregate([
     {
       "$project": {
