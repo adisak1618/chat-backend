@@ -196,13 +196,23 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         break;
       default:
         console.log('default');
-        messageData.find({}).skip(ofset).limit(20).exec(function(err, data){
-          if(err){
-            res.send(err);
-          }else{
-            res.send(data);
-          }
-        });
+        if ( req.params.ofset === 'CLOSE') {
+          messageData.find({status:1, own_id: req.params.option}).exec(function(err, data){
+            if(err){
+              res.send(err);
+            }else{
+              res.send(data);
+            }
+          });
+        } else {
+          messageData.find({status:0, own_id: req.params.option}).exec(function(err, data){
+            if(err){
+              res.send(err);
+            }else{
+              res.send(data);
+            }
+          });
+        }
 
   }
 });
