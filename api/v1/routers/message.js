@@ -248,7 +248,7 @@ function Pop_topic (type) {
       }
     },
     { "$sort": { "length": -1 } },
-    { "$match": {status: type}}
+    { "$match": {status: type}},
     { "$limit": 6 }
   ], function (err, data) {
     if (err) {
