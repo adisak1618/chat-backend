@@ -201,10 +201,18 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         messageData.aggregate([
           {
             "$project": {
-              "name": "$topic",
-              "length": {"$size": "$join_list"}
+              "topic": "$topic",
+              "status": "$status",
+              "description": "$description",
+              "createDate": "$createDate",
+              "join_list": "$join_list",
+              "messages": "$messages",
+              "length": {"$size": "$join_list"},
+              "own_id": "$own_id"
             }
-          }
+          },
+          { "$sort": { "length": 1 } },
+          { "$limit": 6 }
         ], function (err, data) {
           if (err) {
             res.send(err);
