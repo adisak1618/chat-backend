@@ -205,7 +205,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
             }
           });
         } else {
-          messageData.find({status:0, own_id: req.params.option}).exec(function(err, data){
+          messageData.find({status:0, own_id.id: req.params.option}).exec(function(err, data){
             if(err){
               res.send(err);
             }else{
