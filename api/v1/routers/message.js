@@ -197,7 +197,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
       default:
         console.log('default');
         if ( req.params.ofset === 'CLOSE') {
-          messageData.find({status:1, own_id: req.params.option}).exec(function(err, data){
+          messageData.find({status:1, 'own_id.id': req.params.option}).exec(function(err, data){
             if(err){
               res.send(err);
             }else{
