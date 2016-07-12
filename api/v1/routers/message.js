@@ -201,6 +201,7 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         messageData.aggregate([
           {
             "$project": {
+              "name": "$topic",
               "length": {"$size": "$join_list"}
             }
           }
