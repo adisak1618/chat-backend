@@ -189,38 +189,10 @@ router.get('/topics/:option/:ofset', function(req, res, next){
         });
         break;
       case 'CLOSE_POPULAR':
-        console.log('CLOSE');
-        // messageData.find({status:1}).sort({createDate: -1, }).limit(6).exec(function(err, data){
-        //   if(err){
-        //     res.send(err);
-        //   }else{
-        //     res.send(data);
-        //   }
-        // });
-
-        messageData.aggregate([
-          {
-            "$project": {
-              "topic": "$topic",
-              "status": "$status",
-              "description": "$description",
-              "createDate": "$createDate",
-              "join_list": "$join_list",
-              "messages": "$messages",
-              "length": {"$size": "$join_list"},
-              "own_id": "$own_id"
-            }
-          },
-          { "$sort": { "length": -1 } },
-          { "$limit": 6 }
-        ], function (err, data) {
-          if (err) {
-            res.send(err);
-          } else {
-            res.send(data);
-          }
-        })
-
+        Pop_topic(1);
+        break;
+      case 'OPEN_POPULAR':
+        Pop_topic(0);
         break;
       default:
         console.log('default');
@@ -259,5 +231,32 @@ router.get('/topics',function(req, res, next){
   });
 
 });
+
+
+function Pop_topic (type) {
+  messageData.aggregate([
+    {
+      "$project": {
+        "topic": "$topic",
+        "status": "$status",
+        "description": "$description",
+        "createDate": "$createDate",
+        "join_list": "$join_list",
+        "messages": "$messages",
+        "length": {"$size": "$join_list"},
+        "own_id": "$own_id"
+      }
+    },
+    { "$sort": { "length": -1 } },
+    { "$match": {status: type}}
+    { "$limit": 6 }
+  ], function (err, data) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(data);
+    }
+  });
+}
 
 module.exports = router;
