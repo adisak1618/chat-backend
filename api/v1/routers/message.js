@@ -188,6 +188,31 @@ router.get('/topics/:option/:ofset', function(req, res, next){
           }
         });
         break;
+      case 'CLOSE_POPULAR':
+        console.log('CLOSE');
+        // messageData.find({status:1}).sort({createDate: -1, }).limit(6).exec(function(err, data){
+        //   if(err){
+        //     res.send(err);
+        //   }else{
+        //     res.send(data);
+        //   }
+        // });
+
+        messageData.aggregate([
+          {
+            "$project": {
+              "length": {"$size": "$join_list"}
+            }
+          }
+        ], function (err, data) {
+          if (err) {
+            res.send(err);
+          } else {
+            res.send(data);
+          }
+        })
+
+        break;
       default:
         console.log('default');
         messageData.find({}).skip(ofset).limit(20).exec(function(err, data){
