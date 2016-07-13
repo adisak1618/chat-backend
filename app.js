@@ -32,16 +32,17 @@ app.use(function(req, res, next) {
   });
 io.on('connection', function (socket) {
   socket.on('joinRoom', function(roomNum) {
-    console.log('Join room => ' + roomNum);
     socket.join(roomNum);
   })
   socket.on('message', function(data, room) {
-    console.log(socket.rooms);
-    console.log('SEND TO ROOM =>' + room)
+
     socket.broadcast.to(room).emit('message', data)
   })
+  socket.on('join', function(data, room) {
+    socket.broadcast.to(room).emit('join', '')
+    console.log('JOIN UPDATE');
+  })
   socket.on('leaveRoom', function(roomNum) {
-    console.log("LEAVE ROOM" + roomNum);
     socket.leave(roomNum);
   })
   socket.on('disconnect', function() {

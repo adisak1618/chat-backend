@@ -15,7 +15,7 @@ router.post('/topic', middleware.isLogin, function(req, res, next){
   topic = {};
   topic.topic = req.body.topic;
   topic.status = 0;
-  topic.description = req.body.description;
+  topic.description = req.body.description ? req.body.description : 'ไม่มีรายละเอียด';
   topic.own_id = { id: req.userdata._id, name: req.userdata.name};
   topic.messages = [];
   topic.join_list = [];
@@ -69,20 +69,36 @@ router.post('/text/:id', middleware.isLogin, function(req, res, next){
   text.user_id = req.userdata._id;
   text.name = req.userdata.name;
   console.log(text);
-  messageData.update({'_id': req.params.id, 'join_list.user_id': req.userdata._id,  },
-  {
-    $addToSet: {"messages": text}
-  },
-  function(err, data){
-    if(err){
+  // messageData.update({'_id': req.params.id, 'join_list.user_id': req.userdata._id,  },
+  // {
+  //   $addToSet: {"messages": text}
+  // },
+  // function(err, data){
+  //   if(err){
+  //     res.send(err);
+  //   }else{
+  //     if(data.nModified <= 0){
+  //       // res.send({message_success: false, message:'you can sent message. maybe it because you not join this topic yet!'});
+  //       res.send(data);
+  //     }else{
+  //       res.send({message_success: true, message:'Send message success!'});
+  //     }
+  //   }
+  // });
+
+  messageData.findById(req.params.id, function (err, collection) {
+    if (err) {
       res.send(err);
-    }else{
-      if(data.nModified <= 0){
-        // res.send({message_success: false, message:'you can sent message. maybe it because you not join this topic yet!'});
-        res.send(data);
-      }else{
-        res.send({message_success: true, message:'Send message success!'});
-      }
+    } else {
+      collection.messages.push(text);
+      collection.save(function (err, data) {
+        if (err) {
+          res.send('Can not save message');
+        } else {
+          res.send('Success');
+        }
+      });
+
     }
   });
 
