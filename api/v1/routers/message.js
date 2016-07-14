@@ -53,7 +53,7 @@ router.post('/join/:id', middleware.isLogin, function(req, res, next){
         if(data.nModified <= 0){
           res.json({join_success: false, message:'you can not join this topic because you already join this topic'});
         }else{
-          res.json({join_success: true, message:'Join success'});
+          res.json({join_success: true, message:'Join success', data: data.join_list.length});
         }
       }
     }

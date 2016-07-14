@@ -39,7 +39,7 @@ io.on('connection', function (socket) {
     socket.broadcast.to(room).emit('message', data)
   })
   socket.on('join', function(data, room) {
-    socket.broadcast.to(room).emit('join', '')
+    socket.broadcast.to(room).emit('join', data)
     console.log('JOIN UPDATE');
   })
   socket.on('leaveRoom', function(roomNum) {
