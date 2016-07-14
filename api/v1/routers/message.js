@@ -42,22 +42,52 @@ router.post('/del/:id', middleware.isLogin, function (req, res, next) {
 });
 //Join the topic. after that you can chat with that topic
 router.post('/join/:id', middleware.isLogin, function(req, res, next){
-  messageData.update({'_id': req.params.id,'join_list.user_id': {$ne: req.userdata._id}},
-    {
-      $addToSet: {"join_list": {user_id: req.userdata._id}}
-    },
-    function(err, data){
-      if(err){
-        res.send(err);
-      }else{
-        if(data.nModified <= 0){
-          res.json({join_success: false, message:'you can not join this topic because you already join this topic'});
-        }else{
-          res.json({join_success: true, message:'Join success', data: data.join_list.length});
+  // messageData.update({'_id': req.params.id,'join_list.user_id': {$ne: req.userdata._id}},
+  //   {
+  //     $addToSet: {"join_list": {user_id: req.userdata._id}}
+  //   },
+  //   function(err, data){
+  //     if(err){
+  //       res.send(err);
+  //     }else{
+  //       if(data.nModified <= 0){
+  //         res.json({join_success: false, message:'you can not join this topic because you already join this topic'});
+  //       }else{
+  //         res.json({join_success: true, message:'Join success', data: data.join_list.length});
+  //       }
+  //     }
+  //   }
+  // );
+
+  messageData.findById(req.params.id, function (err, collection) {
+    if (err) {
+      res.send(err);
+    } else {
+      if (collection) {
+        res.send('Not found your topic');
+      } else {
+        isJoin = collection.join_list.every(function (item) {
+          if (item.user_id.equals(req.userdata.id)) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        if (isJoin) {
+          collection.join_list.push({user_id: req.userdata._id});
+          collection.save(function (err, data) {
+            if (err) {
+              res.send(err);
+            } else {
+              res.send(data);
+            }
+          });
+        } else {
+          res.send('you join this event already');
         }
       }
     }
-  );
+  })
 });
 
 //recive the message from the user and the we can send to other people who join this topic by using socket.io
