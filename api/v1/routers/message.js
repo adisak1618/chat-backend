@@ -63,7 +63,7 @@ router.post('/join/:id', middleware.isLogin, function(req, res, next){
     if (err) {
       res.send(err);
     } else {
-      if (collection) {
+      if (!collection) {
         res.send({message: 'Not found your topic', data: collection});
       } else {
         isJoin = collection.join_list.every(function (item) {
