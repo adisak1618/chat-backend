@@ -174,7 +174,7 @@ router.post('/close/:id', middleware.isLogin, function(req, res, next){
       res.send(err);
     } else {
       data.status = 1;
-      data.save((err, data) => {
+      data.save(function (err, data) {
         if (err) {
           res.send(err);
         } else {
