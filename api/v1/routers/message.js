@@ -299,7 +299,7 @@ function Pop_topic (res, type) {
         "createDate": "$createDate",
         "join_list": "$join_list",
         "messages": "$messages",
-        "length": {"$size": "$join_list"},
+        "length": {$size: "$join_list"},
         "own_id": "$own_id"
       }
     },
